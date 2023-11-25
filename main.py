@@ -1,19 +1,8 @@
 import xml.etree.ElementTree as ET
-from typing import NamedTuple
 
 class ConfigError(Exception):
     def __init__(self, msg):
-        # print(msg)
         pass
-
-class SchemaEventDataAttrib(NamedTuple):
-    name: str
-    inType: str
-    outType: str
-
-
-class SchemaFilters(NamedTuple):
-    filters: list
 
 
 class SysmonSchema:
@@ -44,7 +33,6 @@ class SysmonSchema:
     def get_schema_events(self) -> dict:
         """
         Get schema events with data and attributes
-        :return dict{NameEventConfigurationFile:[SchemaEventDataAttrib, ..., n]}
         """
         # name="SYSMONEVENT_CREATE_PROCESS" value="1" level="Informational" template="Process Create"
         # rulename="ProcessCreate" ruledefault="include" version="5"
@@ -120,6 +108,11 @@ if "__main__" == __name__:
     # Get schemaversion
     config_schemaversion = root.attrib['schemaversion']
 
+    # Check schemaversion
+    if config_schemaversion > schema.schemaversion:
+        raise ConfigError(f"Config schemaversion better schema version")
+
+
     # Get config options without EventFiltering
     config_options = [elem.tag for elem in root if elem.tag != 'EventFiltering']
 
@@ -160,4 +153,3 @@ if "__main__" == __name__:
                 if rule.attrib['condition'] not in schema.filters:
                     raise ConfigError(f"RuleGroup -> {next_object.tag} -> {rule.tag} -> {rule.attrib['condition']} "
                                       f"= {rule.text}")
-

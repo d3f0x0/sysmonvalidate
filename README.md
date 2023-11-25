@@ -6,6 +6,8 @@ Validation configuration file for sysmon
 2. Config options
 3. RuleName
 4. Condtions
+1. Check schemaversion
+
 
 TODO:
 1. Check type data for rules
