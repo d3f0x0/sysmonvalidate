@@ -55,17 +55,16 @@ class SysmonSchema:
             event_name = event.get('rulename', None)
             # print(event_name)
             if event_name not in events_attrib.keys():
-                events_attrib[event_name] = []
-            for event_attrib in event.iter('data'):
+                events_attrib[event_name] = {}
 
+            for event_attrib in event.iter('data'):
+                events_attrib[event_name][event_attrib.attrib['name']] = {}
                 if 'outType' in event_attrib.attrib:
-                    events_attrib[event_name].append(
-                        SchemaEventDataAttrib(name=event_attrib.attrib['name'], inType=event_attrib.attrib['inType'],
-                                              outType=event_attrib.attrib['outType']))
+                    events_attrib[event_name][event_attrib.attrib['name']]['inType']=event_attrib.attrib['inType']
+                    events_attrib[event_name][event_attrib.attrib['name']]['outType'] = event_attrib.attrib['outType']
                 else:
-                    events_attrib[event_name].append(
-                        SchemaEventDataAttrib(name=event_attrib.attrib['name'], inType=event_attrib.attrib['inType'],
-                                              outType=None))
+                    events_attrib[event_name][event_attrib.attrib['name']]['inType']=event_attrib.attrib['inType']
+                    events_attrib[event_name][event_attrib.attrib['name']]['outType'] = None
 
         # print(events_attrib)
         return events_attrib
@@ -124,6 +123,11 @@ if "__main__" == __name__:
     # Get config options without EventFiltering
     config_options = [elem.tag for elem in root if elem.tag != 'EventFiltering']
 
+    # Check config options
+    for options in config_options:
+        if options not in schema.get_schema_options():
+            raise ConfigError(f"Sysmon -> {options}")
+
     rule_group_element = root.findall(".//EventFiltering//RuleGroup")
 
     # Check into rule group
@@ -147,13 +151,13 @@ if "__main__" == __name__:
                     flagRuleName = True
                     continue
 
-                print(schema.events[next_object.tag])
                 #Check rule name
-                # if rule.tag not in schema.events[next_object.tag]:
-                #     raise ConfigError(f"RuleGroup -> {next_object.tag} -> {rule.tag} = {rule.text}")
+                if rule.tag not in schema.events[next_object.tag]:
+                    raise ConfigError(f"RuleGroup -> {next_object.tag} -> {rule.tag} = {rule.text}")
 
 
                 # Check rule condition
                 if rule.attrib['condition'] not in schema.filters:
-                    raise ConfigError(f"RuleGroup -> {next_object.tag} -> {rule.tag} = {rule.attrib['condition']}")
+                    raise ConfigError(f"RuleGroup -> {next_object.tag} -> {rule.tag} -> {rule.attrib['condition']} "
+                                      f"= {rule.text}")
 
