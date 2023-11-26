@@ -3,6 +3,10 @@
 The script validates the sysmon.xml configuration file with the schema provided by the `sysmon.exe -m` command.
 An audit is being conducted on:
 
+## Used
+
+`python3 sysmonvalidate.py <path_config> <path_schema>`
+
 1. The xml config version does not exceed the schema version
 2. Correctness of the names of the configuration file options
 ```
