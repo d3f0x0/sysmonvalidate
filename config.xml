@@ -897,7 +897,7 @@
 		<!--OPERATIONS:	Most DNS traffic is web advertising. To significantly reduce DNS queries and malware ads, enable client-side advertising filtering via Group Policy. This is easy.
 				Internet Explorer: https://decentsecurity.com/adblocking-for-internet-explorer-deployment/
 				Chrome: https://decentsecurity.com/ublock-for-google-chrome-deployment/
-				Firefox: ToDo
+				Firefox:
 						Also note, this configuration is designed for United States computers. Your country's users will may need customization to reduce noise.
 			-->
 
