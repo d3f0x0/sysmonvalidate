@@ -7,6 +7,8 @@ An audit is being conducted on:
 
 `python3 sysmonvalidate.py <path_config> <path_schema>`
 
+## Description
+
 1. The xml config version does not exceed the schema version
 2. Correctness of the names of the configuration file options
 ```
