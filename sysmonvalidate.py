@@ -129,7 +129,7 @@ if "__main__" == __name__:
     parser = argparse.ArgumentParser(description='Validate configuration against Sysmon schema.')
     parser.add_argument('config_file', help='Path to the configuration file')
     parser.add_argument('schema_file', help='Path to the Sysmon schema file')
-
+    
     args = parser.parse_args()
 
     # Open config xml
@@ -187,13 +187,22 @@ if "__main__" == __name__:
                 if not flagRuleName:
                     flagRuleName = True
                     continue
+                
+                if rule.tag == "Rule":
+                    if rulegroup.attrib['groupRelation'] not in ['and', 'or']:
+                        raise ConfigError(f"Values of the groupRelation attribute of the Rule element.\n"
+                              f"Rule -> groupRelation: {next_object}\n")
+                    continue
 
                 # Sub-element data of the event element
-                if rule.tag not in schema.events[next_object.tag]:
+                if rule.tag not in schema.events[next_object.tag] and rule.tag != "Rule":
                     raise ConfigError(f"Sub-element data of the event element\nRuleGroup -> {next_object.tag} -> ERROR: {rule.tag} = {rule.text}")
 
                 # Used filters of the data element
-                if rule.attrib['condition'] not in schema.filters:
+                if not "condition" in rule.attrib:
+                    raise ConfigError(f"Elements without condition.\n {next_object.tag} -> {rule.tag} -> {rule.text}")
+                
+                if rule.attrib['condition'] not in schema.filters :
                     raise ConfigError(f"Used filters of the data element.\nRuleGroup -> {next_object.tag} -> {rule.tag} -> {rule.attrib['condition']} "
                                       f"= {rule.text}")
 
