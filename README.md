@@ -1,6 +1,6 @@
 # SysmonValidate
 
-The script validates the sysmon.xml configuration file with the schema provided by the `sysmon.exe -m` command.
+The script validates the sysmon.xml configuration file with the schema provided by the `sysmon.exe -s` command.
 An audit is being conducted on:
 
 ## Used
