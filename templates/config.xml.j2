@@ -1,0 +1,14 @@
+<Sysmon schemaversion="{{ schemaversion }}">
+    <HashAlgorithms>*</HashAlgorithms>
+    <DnsLookup>True</DnsLookup>
+    <CheckRevocation>True</CheckRevocation>
+    <ArchiveDirectory>sysmon</ArchiveDirectory>
+    <EventFiltering>
+        {% for module in modules_files %}
+            {% set event = module.split('.') %}
+            {% if event[0] in event_schema %}
+                {% include module %}
+            {% endif %}        
+        {% endfor %}
+    </EventFiltering>
+</Sysmon>
